@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/eddie/Documents/ClionApp/algorithm/Struct/Student.h
+iostream
+-
+
+/Users/eddie/Documents/ClionApp/algorithm/Utils/SortTestHelper.h
+iostream
+-
+cassert
+-
+
+/Users/eddie/Documents/ClionApp/algorithm/main.cpp
+iostream
+-
+Struct/Student.h
+/Users/eddie/Documents/ClionApp/algorithm/Struct/Student.h
+Utils/SortTestHelper.h
+/Users/eddie/Documents/ClionApp/algorithm/Utils/SortTestHelper.h
+
