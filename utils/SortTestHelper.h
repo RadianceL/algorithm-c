@@ -11,6 +11,33 @@
 using namespace std;
 
 namespace SortTestHelper{
+
+    /**
+     * 生成近乎有序的数组
+     * @param n
+     * @param rangeL
+     * @param rangeR
+     * @return
+     */
+    int* generateNearlyOrderRandomArray(int n, int swapTimes){
+
+        int* arr = new int[n];
+
+        for (int i = 0; i < n; ++i) {
+            arr[i] = i;
+        }
+
+        srand(time(NULL));
+
+        for (int j = 0; j < swapTimes; ++j) {
+            int posx = rand() % n;
+            int posy = rand() % n;
+            swap(arr[posx], arr[posy]);
+        }
+
+        return arr;
+    };
+
     /**
      * 这个函数将生成n个在[rangeL,rangeR]范围中
      * @param n
@@ -74,6 +101,14 @@ namespace SortTestHelper{
 
         cout << sortName << " : " << double(endTime - startTime) / CLOCKS_PER_SEC << " s" << endl;
 
+    }
+
+    int* copyArray(int arr[], int n){
+
+        int* array = new int[n];
+        copy(arr, arr + n, array);
+
+        return array;
     }
 }
 
