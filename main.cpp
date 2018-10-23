@@ -200,9 +200,118 @@ void mergeSort(T arr[] , int n){
     __mergeSort(arr, 0, n-1);
 }
 
+ /**
+  * 对arr[l...r] 前闭后闭部分进行partition操作
+  * @tparam T
+  * @param arr
+  * @param l
+  * @param r
+  * @return p值 将满足arr[l...p-1] < arr[p] && arr[p+1...r] > arr[p]
+  */
+template<typename T>
+int __partition1(T arr[] , int l, int r){
+
+    // -- 改进几乎有序数组时间过长方案 交换数组中随机一个元素到arr[l]的位置
+    swap(arr[l],arr[rand()%(r - l + 1) + l]);
+    // -- 改进结束
+    T v = arr[l];
+
+    int j = l;
+
+     for (int i = l + 1; i <= r; ++i) {
+
+         if(arr[i] < v){
+             swap(arr[j + 1], arr[i]);
+             j++;
+         }
+
+     }
+
+     swap(arr[l], arr[j]);
+
+     return j;
+}
+
 /**
- * 自底向上的归并排序
+ * 双路快排序方案 解决相同数据过多导致的分配不平衡结果
+ * @tparam T
+ * @param arr
+ * @param l
+ * @param r
+ * @return
  */
+template<typename T>
+int __partition2(T arr[] , int l, int r){
+
+    // -- 改进方案 交换数组中随机一个元素到arr[l]的位置
+    swap(arr[l],arr[rand()%(r - l + 1) + l]);
+    // -- 改进结束
+    T v = arr[l];
+
+    //i (l+1): arr[l+1...i) 初始值l+1 -> 向右前进 前闭后开
+    //j (r) : arr(j...r] 初始值r -> 想左前进 前开后闭
+    int i = l +1, j = r;
+
+    //arr[l + 1...i] <= v && arr[j...r] >= v
+    while (true) {
+        while ( i <= r && arr[i] < v) i ++;
+        while ( j >= l + 1 && arr[j] > v) j--;
+
+        if (i > j) break;
+
+        swap(arr[i],arr[j]); i ++; j--;
+    }
+
+    swap(arr[l],arr[j]);
+    return j;
+
+}
+
+/**
+ * 对arr[l...r]前闭后闭部分进行快速排序
+ * @tparam T
+ * @param arr
+ * @param l
+ * @param r
+ */
+template<typename T>
+void __quickSort(T arr[] , int l, int r){
+
+    //如果该区间小于16个元素 则使用插入排序法
+    if (r - l <= 15){
+        //对该数组[l...r]区间进行排序
+        insertionSort(arr, l, r);
+        return;
+    }
+
+    //未对过多相同数 数组进行优化 相同数据过多的数据时间过长
+    int p1 = __partition1(arr, l, r);
+
+    //针对相同数过多数组进行优化 采用双路快排方法解决问题
+    int p = __partition2(arr, l, r);
+
+    __quickSort(arr, l, p -1);
+    __quickSort(arr, p + 1, r);
+}
+
+/**
+ * 快排序
+ * 定义v为首元素 j为v元素中间点 即j前元素小于v j后元素大于v
+ * arr[l + 1 ... j] 前闭后闭 < v
+ * arr[j + 1 ... i - 1] 前闭后闭 > v
+ *
+ * 排序一份相对有序的数组 与归并相同 分为两个子数组 但归并排序每轮排序左右子数组完全相同
+ * 快排序左右子数组并不一定相同 在最坏的情况 某所有值都属于arr[l + 1 ... j] 则复杂度可能退化到O(n^2)
+ */
+template<typename T>
+void quickSort(T arr[] , int n){
+    // -- 改进几乎有序数组时间过长方案 设置随机种子
+    srand(time(NULL));
+    // -- 改进结束
+    __quickSort(arr, 0, n - 1);
+
+}
+
 template<typename T>
 void mergeSortBu(T arr[] , int n){
     for (int sz = 1; sz < n; sz+=sz) {
@@ -215,10 +324,23 @@ void mergeSortBu(T arr[] , int n){
 
 int main() {
     int n = 1000000;
-    int *arr1 = SortTestHelper::generateRandomArray(n, 0, n);
+    int *arr1 = SortTestHelper::generateRandomArray(n, 0, 10);
+    int *arr2 = SortTestHelper::copyArray(arr1, n);
 
-    SortTestHelper::testSort("selection sort", mergeSortBu, arr1, n);
+    SortTestHelper::testSort("merge sort", mergeSort, arr1, n);
+    SortTestHelper::testSort("quick sort", quickSort, arr2, n);
 
     delete[] arr1;
+    delete[] arr2;
+
+    int swapTimes = 100;
+    int *arr3 = SortTestHelper::generateNearlyOrderRandomArray(n, swapTimes);
+    int *arr4 = SortTestHelper::copyArray(arr1, n);
+
+    SortTestHelper::testSort("merge sort", mergeSort, arr3, n);
+    SortTestHelper::testSort("quick sort", quickSort, arr4, n);
+
+    delete[] arr1;
+    delete[] arr2;
     return 0;
 }
