@@ -161,7 +161,9 @@ void __merge(T arr[] , int l, int mid, int r){
     }
 }
 
-//递归使用归并排序 对arr[l...r]前闭后闭的范围进行排序
+/**
+ * 递归使用归并排序 对arr[l...r]前闭后闭的范围进行排序
+ */
 template<typename T>
 void __mergeSort(T arr[] , int l, int r){
     //如果该区间小于16个元素 则使用插入排序法
@@ -198,7 +200,9 @@ void mergeSort(T arr[] , int n){
     __mergeSort(arr, 0, n-1);
 }
 
-//自底向上的归并排序
+/**
+ * 自底向上的归并排序
+ */
 template<typename T>
 void mergeSortBu(T arr[] , int n){
     for (int sz = 1; sz < n; sz+=sz) {
@@ -216,6 +220,5 @@ int main() {
     SortTestHelper::testSort("selection sort", mergeSortBu, arr1, n);
 
     delete[] arr1;
-
     return 0;
 }
